@@ -13,7 +13,16 @@ import (
 var taskMap = make(map[string]*model.Task)
 var mutex = &sync.Mutex{}
 
-//----------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------
+// @Summary Create task
+// @Description Add and execute new task
+// @Accept  json
+// @Produce  json
+// @Param task  body      model.Task  true  "Add new task"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /task [post]
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -28,6 +37,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	task.Status = "new"
 	task.ID = fmt.Sprintf("%d", time.Now().UnixNano())
 
 	mutex.Lock()
@@ -47,7 +57,15 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------
+// @Summary Get task status
+// @Description Return task status and details
+// @Param        taskid   path      int  true  "Task ID"  Format(int)
+// @Success 200
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Router /task/ [get]
 func GetTaskStatus(w http.ResponseWriter, r *http.Request) {
 	taskID := r.URL.Path[len("/task/"):]
 
@@ -71,8 +89,10 @@ func GetTaskStatus(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------
 func ExecuteTask(task *model.Task) {
+	task.Status = "in_process"
+
 	client := &http.Client{}
 	request, err := http.NewRequest(task.Method, task.URL, nil)
 	if err != nil {
