@@ -1,0 +1,75 @@
+basePath: /
+definitions:
+  model.Task:
+    properties:
+      headers:
+        additionalProperties:
+          type: string
+        type: object
+      headersArray:
+        items:
+          type: string
+        type: array
+      httpStatusCode:
+        type: integer
+      id:
+        type: string
+      length:
+        type: integer
+      method:
+        type: string
+      status:
+        type: string
+      url:
+        type: string
+    type: object
+host: http://localhost:9090
+info:
+  contact: {}
+  description: Tasker make http requests to 3rd-party services
+  title: Tasker
+  version: "1.0"
+paths:
+  /task:
+    post:
+      consumes:
+      - application/json
+      description: Add and execute new task
+      parameters:
+      - description: Add new task
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/model.Task'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Create task
+  /task/:
+    get:
+      description: Return task status and details
+      parameters:
+      - description: Task ID
+        format: int
+        in: path
+        name: taskid
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Get task status
+swagger: "2.0"
