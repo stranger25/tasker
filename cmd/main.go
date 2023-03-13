@@ -9,8 +9,6 @@ import (
 	"syscall"
 	"tasker/internal/service"
 	"time"
-
-	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // @title Tasker
@@ -25,9 +23,6 @@ func main() {
 	mux.HandleFunc("/task", service.CreateTask)
 	mux.HandleFunc("/task/", service.GetTaskStatus)
 	mux.HandleFunc("/live", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusOK) })
-	mux.Handle("/swagger/", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:9090./docs/swagger.json"), //The url pointing to API definition"
-	))
 
 	server := &http.Server{
 		Addr:    ":9090",
