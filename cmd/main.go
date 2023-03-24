@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"tasker/internal/repository"
 	"tasker/internal/service"
 	"time"
 )
@@ -14,18 +15,31 @@ import (
 // @title Tasker
 // @version 1.0
 // @description Tasker make http requests to 3rd-party services
-
 // @host http://localhost:9090
 // @BasePath /
 
 func main() {
+	var taskHandler *repository.TaskHandler
+	c, err := service.InitConfig()
+
+	if err != nil {
+		log.Fatalf("Could not read config.yaml %s: ", err)
+	}
+
+	s := service.NewService(c, taskHandler)
+
+	err = s.InitTaskHandler()
+	if err != nil {
+		log.Fatalf("Could not init TaskHandler %s: ", err)
+	}
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("/task", service.CreateTask)
-	mux.HandleFunc("/task/", service.GetTaskStatus)
+	mux.HandleFunc("/task", s.CreateTask)
+	mux.HandleFunc("/task/", s.GetTaskStatus)
 	mux.HandleFunc("/live", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusOK) })
 
 	server := &http.Server{
-		Addr:    ":9090",
+		Addr:    ":" + c.Server.Port,
 		Handler: mux,
 	}
 

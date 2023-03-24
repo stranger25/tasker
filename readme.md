@@ -6,4 +6,6 @@ The standard Golang net/http library was used for implementation. The service ru
     POST /task - for receiving and processing tasks.
     GET /task/taskid - for returning the task execution status.
 
-Unit tests have been implemented and a Dockerfile has been written for easy deployment.
+Add config
+Add support Redis and Postgress
+

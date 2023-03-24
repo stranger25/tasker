@@ -1,0 +1,10 @@
+database: 
+  dsn: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+Redis:
+  addr: localhost:6379
+  password: ''
+  db: 0        
+server: 
+  port: "9090"
+  repo: "postgres"
+
