@@ -29,16 +29,16 @@ server:
 
 If selected "postgres" you need create table :
 
-CREATE TABLE tasks (
-    id varchar(255) PRIMARY KEY,
-    method varchar(255),
-    url varchar(255),
-    headers jsonb,
-    status varchar(255),
-    http_status_code integer,
-    headers_array text[],
-    length integer
-);
+    CREATE TABLE tasks (
+        id varchar(255) PRIMARY KEY,
+        method varchar(255),
+        url varchar(255),
+        headers jsonb,
+        status varchar(255),
+        http_status_code integer,
+        headers_array text[],
+        length integer
+    );
 
 
 
