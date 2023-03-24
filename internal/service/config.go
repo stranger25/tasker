@@ -9,6 +9,9 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// InitConfig opens the config file and reads the configuration from it.
+// It returns a pointer to the Config struct and an error if one is encountered.
+// It also prints out log messages to indicate the success of the operations.
 func InitConfig() (cfg *model.Config, err error) {
 	file, err := os.Open("../config/config.yaml")
 

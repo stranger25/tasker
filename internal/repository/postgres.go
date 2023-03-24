@@ -16,7 +16,7 @@ type PostgresTaskCache struct {
 	db *sql.DB
 }
 
-func NewPostgresTaskCache(c model.DatabaseConfig) (*PostgresTaskCache, error) {
+func NewPostgresTaskCache(c model.PostgresConfig) (*PostgresTaskCache, error) {
 	db, err := sql.Open("postgres", c.DSN)
 	if err != nil {
 		return nil, err

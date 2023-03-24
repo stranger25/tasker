@@ -1,13 +1,13 @@
 package tasker_test
 
-//TODO: Write correct tests
-/*import (
+import (
 	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"tasker/internal/handler"
 	"tasker/internal/model"
+	"tasker/internal/repository"
 	"tasker/internal/service"
 	"testing"
 )
@@ -48,6 +48,21 @@ func TestExecuteTask(t *testing.T) {
 }
 
 func TestGetTaskStatus(t *testing.T) {
+
+	var taskHandler *repository.TaskHandler
+	c, err := service.InitConfig()
+
+	if err != nil {
+		t.Fatalf("Could not read config.yaml %v: ", err)
+	}
+
+	s := service.NewService(c, taskHandler)
+
+	err = s.InitTaskHandler()
+	if err != nil {
+		t.Fatalf("Could not init TaskHandler %v: ", err)
+	}
+
 	reqBody := map[string]interface{}{
 		"method": "GET",
 		"url":    "https://example.com",
@@ -63,7 +78,7 @@ func TestGetTaskStatus(t *testing.T) {
 	}
 
 	createRR := httptest.NewRecorder()
-	createHandler := http.HandlerFunc(service.CreateTask)
+	createHandler := http.HandlerFunc(s.CreateTask)
 	createHandler.ServeHTTP(createRR, createReq)
 
 	var createRespBody map[string]interface{}
@@ -79,7 +94,7 @@ func TestGetTaskStatus(t *testing.T) {
 	}
 
 	getRR := httptest.NewRecorder()
-	getHandler := http.HandlerFunc(service.GetTaskStatus)
+	getHandler := http.HandlerFunc(s.GetTaskStatus)
 	getHandler.ServeHTTP(getRR, getReq)
 
 	if status := getRR.Code; status != http.StatusOK {
@@ -99,4 +114,3 @@ func TestGetTaskStatus(t *testing.T) {
 		t.Error("expected 'status' field in response body")
 	}
 }
-*/

@@ -23,7 +23,7 @@ func NewService(config *model.Config, taskHandler *repository.TaskHandler) *Serv
 
 func (s *Service) InitTaskHandler() error {
 	var err error
-	s.taskHandler, err = repository.NewTaskHandler(s.cfg.Server.Repo, *s.cfg)
+	s.taskHandler, err = repository.NewTaskHandler(s.cfg.Server.Storage, *s.cfg)
 	return err
 }
 

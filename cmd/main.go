@@ -23,14 +23,14 @@ func main() {
 	c, err := service.InitConfig()
 
 	if err != nil {
-		log.Fatalf("Could not read config.yaml %s: ", err)
+		log.Fatalf("Could not read config.yaml %v: ", err)
 	}
 
 	s := service.NewService(c, taskHandler)
 
 	err = s.InitTaskHandler()
 	if err != nil {
-		log.Fatalf("Could not init TaskHandler %s: ", err)
+		log.Fatalf("Could not init TaskHandler %v: ", err)
 	}
 
 	mux := http.NewServeMux()
