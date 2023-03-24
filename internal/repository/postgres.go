@@ -5,12 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"strings"
 	"tasker/internal/handler"
 	"tasker/internal/model"
 	"time"
 
-	_ "github.com/lib/pq"
+	"github.com/lib/pq"
 )
 
 type PostgresTaskCache struct {
@@ -61,10 +60,9 @@ func (c *PostgresTaskCache) AddNew(task model.Task) string {
 
 func (c *PostgresTaskCache) GetStatus(taskID string) (*model.Task, bool) {
 	row := c.db.QueryRow("SELECT method, url, headers, status, http_status_code, headers_array, length FROM tasks WHERE id = $1", taskID)
-	//FIXME: match datdtype with postgress
 	var task model.Task
 	var headers []byte
-	err := row.Scan(&task.Method, &task.URL, &headers, &task.Status, &task.HTTPStatusCode, &task.HeadersArray, &task.Length)
+	err := row.Scan(&task.Method, &task.URL, &headers, &task.Status, &task.HTTPStatusCode, pq.Array(&task.HeadersArray), &task.Length)
 	if err != nil {
 		return nil, false
 	}
@@ -88,7 +86,7 @@ func (c *PostgresTaskCache) execTask(task *model.Task) {
 	if err != nil {
 		log.Println("Could not prepare script to update task :", task.ID, err)
 	}
-	_, err = stmt.Exec(task.Status, task.HTTPStatusCode, strings.Join(task.HeadersArray, ""), task.Length, task.ID)
+	_, err = stmt.Exec(task.Status, task.HTTPStatusCode, pq.Array(task.HeadersArray), task.Length, task.ID)
 	if err != nil {
 		log.Println("Could not update task :", task.ID, err)
 		return
