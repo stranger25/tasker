@@ -1,34 +1,28 @@
-Service Description
+README
 
-This service is designed to receive requests, generate tasks from them, and send them to be executed by a third party. 
-The standard Golang net/http library was used for implementation. The service runs on port 9090 and implements two methods:
+Service Description:
 
-    POST /task - for receiving and processing tasks.
-    GET /task/taskid - for returning the task execution status.
+The service is designed to receive requests, generate tasks from them, and send them to be executed by a third party. It implements two methods: POST /task and GET /task/taskid. The standard Golang net/http library was used for implementation. The service runs on port 9090.
 
-Add support Redis and Postgress.
+Support for Redis and Postgres was added. Before running the service, please ensure that all parameters are filled in correctly in the config/config.yaml file.
 
-Add config
-  Before run service you need check config/config.yaml file, and make sure all parameters are filled in correctly
+The config file contains the following parameters:
 
-postgres: 
-  dsn: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
-redis:
-  addr: localhost:6379
-  password: ''
-  db: 0        
-server: 
-  port: "9090"
-  storage: "postgres"
+- postgres:
+    - dsn: "<database_connection_string>"
+- redis:
+    - addr: "<redis_server_address>'
+    - password: '<redis_password>'
+    - db: <redis_db_index>
+- server:
+    - port: "<port_number>"
+    - storage: "<postgres/redis/memory>"
 
- storage - is nidicate where tasks will be saved
+The `storage` parameter indicates where tasks will be saved: 
 
-"postgres" - in Postgress Database
-"redis" - in Redis Database
-"memory" - in map (key\value datastruct golang)
+- If `postgres` is selected, a table named `tasks` should be created with the following schema:
 
-If selected "postgres" you need create table :
-
+    ```
     CREATE TABLE tasks (
         id varchar(255) PRIMARY KEY,
         method varchar(255),
@@ -39,9 +33,17 @@ If selected "postgres" you need create table :
         headers_array text[],
         length integer
     );
+    ```
 
+- If `redis` is selected, tasks will be saved in a Redis database.
 
+- If `memory` is selected, tasks will be stored in a map (key/value data structure in Golang).
 
+**Note:**
 
+- Please ensure that the PostgreSQL and Redis servers are running and accessible before running the service.
+- Make sure to update the config.yaml file with the correct database connection string and Redis server credentials if needed.
 
-
+TODO
+  - Goose migrations
+  - Prometeus metrics
