@@ -85,6 +85,7 @@ func (c *PostgresTaskCache) execTask(task *model.Task) {
 	stmt, err := c.db.Prepare("UPDATE tasks SET status = $1, http_status_code = $2, headers_array = $3, length = $4 WHERE id = $5")
 	if err != nil {
 		log.Println("Could not prepare script to update task :", task.ID, err)
+		return
 	}
 	_, err = stmt.Exec(task.Status, task.HTTPStatusCode, pq.Array(task.HeadersArray), task.Length, task.ID)
 	if err != nil {

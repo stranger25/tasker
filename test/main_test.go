@@ -3,6 +3,7 @@ package tasker_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"tasker/internal/handler"
@@ -48,6 +49,12 @@ func TestExecuteTask(t *testing.T) {
 }
 
 func TestGetTaskStatus(t *testing.T) {
+	// Запускаем мок-сервер
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintln(w, `{"message": "Hello, world!"}`)
+	}))
+	defer mockServer.Close()
 
 	var taskHandler *repository.TaskHandler
 	c, err := service.InitConfig()
@@ -63,9 +70,10 @@ func TestGetTaskStatus(t *testing.T) {
 		t.Fatalf("Could not init TaskHandler %v: ", err)
 	}
 
+	// Запрашиваем создание задачи с использованием мок-сервера в качестве URL
 	reqBody := map[string]interface{}{
 		"method": "GET",
-		"url":    "https://example.com",
+		"url":    mockServer.URL,
 	}
 	jsonReq, err := json.Marshal(reqBody)
 	if err != nil {
@@ -88,6 +96,7 @@ func TestGetTaskStatus(t *testing.T) {
 
 	taskID := createRespBody["id"].(string)
 
+	// Запрашиваем статус задачи с использованием taskID
 	getReq, err := http.NewRequest("GET", "/task/"+taskID, nil)
 	if err != nil {
 		t.Fatalf("failed to create request: %v", err)
