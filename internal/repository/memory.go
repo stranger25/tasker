@@ -35,17 +35,17 @@ func (c *TaskCache) AddNew(task model.Task) string {
 
 func (c *TaskCache) GetStatus(taskID string) (*model.Task, bool) {
 	c.mutex.Lock()
-	defer c.mutex.Unlock()
-
 	task, ok := c.tasks[taskID]
+	c.mutex.Unlock()
 
 	return task, ok
 }
 
 func (c *TaskCache) execTask(task *model.Task) {
 	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
 	task.Status = "in_process"
-	c.mutex.Unlock()
 
 	handler.ExecuteTask(task)
 	c.tasks[task.ID] = task

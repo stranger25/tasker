@@ -18,6 +18,15 @@ import (
 // @host http://localhost:9090
 // @BasePath /
 
+/*
+main starts a new HTTP server with a TaskHandler that is initialized 
+by the NewService function. It creates a new ServeMux and sets up 
+handlers for /task, /task/, and /live. It then starts up the server 
+and waits for an interrupt signal before gracefully shutting down the 
+server.
+*/
+
+
 func main() {
 	var taskHandler *repository.TaskHandler
 	c, err := service.InitConfig()
